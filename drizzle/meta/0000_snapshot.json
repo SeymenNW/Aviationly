@@ -1,29 +1,30 @@
 {
-  "id": "fc91d751-1ac1-4a58-9f57-8fdebc9ed4dc",
+  "id": "1ecf85a7-a97f-48ba-a85b-c054939652a3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.users": {
-      "name": "users",
+    "public.airports": {
+      "name": "airports",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "varchar(255)",
           "primaryKey": true,
-          "notNull": true,
-          "identity": {
-            "type": "always",
-            "name": "users_id_seq",
-            "schema": "public",
-            "increment": "1",
-            "startWith": "1",
-            "minValue": "1",
-            "maxValue": "2147483647",
-            "cache": "1",
-            "cycle": false
-          }
+          "notNull": true
+        },
+        "ident": {
+          "name": "ident",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -31,31 +32,95 @@
           "primaryKey": false,
           "notNull": true
         },
-        "age": {
-          "name": "age",
+        "latitude_deg": {
+          "name": "latitude_deg",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "longitude_deg": {
+          "name": "longitude_deg",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "elevation_ft": {
+          "name": "elevation_ft",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "email": {
-          "name": "email",
-          "type": "varchar(255)",
+        "continent": {
+          "name": "continent",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true
+        },
+        "iso_country": {
+          "name": "iso_country",
+          "type": "varchar(3)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "iso_region": {
+          "name": "iso_region",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "municipality": {
+          "name": "municipality",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scheduled_service": {
+          "name": "scheduled_service",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gps_code": {
+          "name": "gps_code",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "iata_code": {
+          "name": "iata_code",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "local_code": {
+          "name": "local_code",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "home_link": {
+          "name": "home_link",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wikipedia_link": {
+          "name": "wikipedia_link",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "keywords": {
+          "name": "keywords",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "users_email_unique": {
-          "name": "users_email_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

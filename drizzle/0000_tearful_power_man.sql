@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS "airports" (
+	"id" varchar(255) PRIMARY KEY NOT NULL,
+	"ident" varchar(50) NOT NULL,
+	"type" varchar(50) NOT NULL,
+	"name" varchar(255) NOT NULL,
+	"latitude_deg" real NOT NULL,
+	"longitude_deg" real NOT NULL,
+	"elevation_ft" integer NOT NULL,
+	"continent" varchar(50) NOT NULL,
+	"iso_country" varchar(3) NOT NULL,
+	"iso_region" varchar(5) NOT NULL,
+	"municipality" varchar(100) NOT NULL,
+	"scheduled_service" varchar(10) NOT NULL,
+	"gps_code" varchar(10),
+	"iata_code" varchar(10),
+	"local_code" varchar(10),
+	"home_link" varchar(255),
+	"wikipedia_link" varchar(255),
+	"keywords" text
+);
