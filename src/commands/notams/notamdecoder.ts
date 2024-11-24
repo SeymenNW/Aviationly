@@ -7,7 +7,7 @@ import type { DecodedNotam } from '../../types/DecodedNotam';
 const storymodal: Command = {
 	data: new SlashCommandBuilder()
 		.setName('notamdecoder')
-		.setDescription('Decode Notams with the standard format'),
+		.setDescription('Decode any Notam (Some Notam types are not compatible)'),
 
 
 	async execute(interaction: CommandInteraction) { 
