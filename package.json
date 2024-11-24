@@ -1,0 +1,40 @@
+{
+  "name": "aviationly",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "^1.1.13",
+    "@types/pg": "^8.11.10",
+    "drizzle-kit": "^0.28.1",
+    "tsx": "^4.19.2",
+    "vitest": "^2.1.5"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "build": "bun build ./src/index.ts --outdir ./build --target bun",
+    "node-build": "node ./src/index.ts",
+    "deploy-commands": "bun run ./scripts/deploySlashCommands.ts",
+    "server-dev-watch": "bun --watch ./src/index.ts",
+    "server-dev": "bun --hot ./src/index.ts",
+    "run-build": "bun run ./build/index.js",
+    "debug": "bun --inspect ./src/index.ts",
+    "test-build": "bun build --target=bun ./src/index.ts --outdir ./build",
+    "db-pull": "bun drizzle-kit pull",
+    "db-generate": "bun drizzle-kit generate",
+    "db-push": "bun drizzle-kit push",
+    "db-migrate": "bun drizzle-kit migrate",
+    "node-run": "nodemon ./src/index.ts"
+  },
+  "dependencies": {
+    "@discordjs/rest": "^2.4.0",
+    "discord-api-types": "^0.37.105",
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.36.3",
+    "glob": "^11.0.0",
+    "pg": "^8.13.1",
+    "postgres": "^3.4.5"
+  }
+}
