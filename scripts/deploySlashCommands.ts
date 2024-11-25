@@ -19,6 +19,9 @@ const foldersPath = path.join(__dirname, '..', 'src', 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
 
 (async () => {
+	for (const folder of commandFolders) {
+		const commandsPath = path.join(foldersPath, folder);
+		const commandFiles = fs.readdirSync(commandsPath).filter((file: string) => file.endsWith('.ts'));
 
 		for (const file of commandFiles) {
 			const filePath = path.join(commandsPath, file);
