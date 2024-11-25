@@ -1,4 +1,4 @@
-import { AutocompleteInteraction, CommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { AutocompleteInteraction, CommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import Papa from 'papaparse';
 import type { Command } from '../../types/Command';
 import type { AirportData } from '../../types/AirportData';
@@ -55,7 +55,38 @@ const storymodal: Command = {
                 const airportDataResponse = airportData.find(ad => ad.ident === icaoValue);
     
                 if (airportDataResponse) {
-                    await interaction.reply(airportDataResponse.name);
+
+                    const airportEmbed = new EmbedBuilder()
+                    .setTitle(`Airport: ${airportDataResponse.name}`)
+                    .setDescription(`Detailed information about ${airportDataResponse.name}, ${airportDataResponse.iso_country}`)
+                    .addFields(
+                        {
+                            name: `General Information`,
+                            value: `**ID**: ${airportDataResponse.id}\n**Ident**: ${airportDataResponse.ident}\n**Type**: ${airportDataResponse.type}\n**Region**: ${airportDataResponse.iso_region}\n**Country**: ${airportDataResponse.iso_country}`,
+                            inline: false,
+                        },
+                        {
+                            name: `Location`,
+                            value: `**Latitude**: ${airportDataResponse.latitude_deg}\n**Longitude**: ${airportDataResponse.longitude_deg}\n**Elevation**: ${airportDataResponse.elevation_ft} ft\n**Municipality**: ${airportDataResponse.municipality}`,
+                            inline: false,
+                        },
+                        {
+                            name: `Codes`,
+                            value: `**GPS Code**: ${airportDataResponse.gps_code || "N/A"}\n**IATA Code**: ${airportDataResponse.iata_code || "N/A"}\n**Local Code**: ${airportDataResponse.local_code || "N/A"}`,
+                            inline: false,
+                        },
+                        {
+                            name: `Links`,
+                            value: `**Wikipedia**: ${airportDataResponse.wikipedia_link || "N/A"}\n**Home**: ${airportDataResponse.home_link || "N/A"}`,
+                            inline: false,
+                        }
+                    )
+                    .setColor(0x1e90ff)
+                    .setFooter({ text: `Airport: ${airportDataResponse.name}` })
+                    .setTimestamp();
+                
+
+                    await interaction.reply({embeds: [airportEmbed]});
                 } else {
                     await interaction.reply("Looks like that specific Airport doesn't exist.. Or you just can't spell.");
                 }
