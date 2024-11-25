@@ -1,6 +1,8 @@
 import Papa from "papaparse";
 import type { AirportData } from "../../types/AirportData";
 import type { CachedData } from "../../types/CachedData";
+import { db } from "../../drizzle/db";
+import { airportsTable } from '../../drizzle/schema';
 
 
 let cachedAirportData:CachedData | null = null;
@@ -17,7 +19,8 @@ async function getAirportsList(): Promise<AirportData[]> {
 
     if (cachedAirportData && (Date.now() - cachedAirportData.timestamp) < CACHE_EXPIRY) {
         console.log("USING CACHED DATA");
-        
+
+ 
         return cachedAirportData.data;
     }
 

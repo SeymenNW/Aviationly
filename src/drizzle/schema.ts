@@ -21,3 +21,29 @@ export const airportsTable = pgTable('airports', {
   wikipedia_link: varchar('wikipedia_link', { length: 255 }), // Wikipedia link (nullable)
   keywords: text('keywords'),  // Keywords for the airport (nullable, stores long text)
 });
+
+
+       // const airportData: AirportData[] = cachedAirportData.data;
+
+        // for (const airport of airportData) {
+        //    await db.insert(airportsTable).values({
+        //         id: airport.id,
+        //         ident: airport.ident,
+        //         type: airport.type,
+        //         name: airport.name,
+        //         latitude_deg: airport.latitude_deg,
+        //         longitude_deg: airport.longitude_deg,
+        //         elevation_ft: airport.elevation_ft,
+        //         continent: airport.continent,
+        //         iso_country: airport.iso_country,
+        //         iso_region: airport.iso_region,
+        //         municipality: airport.municipality,
+        //         scheduled_service: airport.scheduled_service,
+        //         gps_code: airport.gps_code,
+        //         iata_code: airport.iata_code,
+        //         local_code: airport.local_code,
+        //         home_link: airport.home_link,
+        //         wikipedia_link: airport.wikipedia_link,
+        //         keywords: airport.keywords
+        //     });
+        // }
