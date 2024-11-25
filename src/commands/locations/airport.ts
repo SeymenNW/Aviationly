@@ -3,6 +3,8 @@ import Papa from 'papaparse';
 import type { Command } from '../../types/Command';
 import type { AirportData } from '../../types/AirportData';
 import getAirportsList from '../../commandServices/airport/getAirportsList';
+import getCountry from '../../commandServices/country/getCountryName';
+import type { Country } from '../../types/Country';
 
 type stringChoice = {
     name: string,
@@ -55,18 +57,20 @@ const storymodal: Command = {
                 const airportDataResponse = airportData.find(ad => ad.ident === icaoValue);
     
                 if (airportDataResponse) {
+                    const countryInfo:Country = await getCountry(airportDataResponse.iso_country);
+
                     const generalInfo: string[] = [];
                     if (airportDataResponse.id) generalInfo.push(`**ID**: ${airportDataResponse.id}`);
                     if (airportDataResponse.ident) generalInfo.push(`**Ident**: ${airportDataResponse.ident}`);
                     if (airportDataResponse.type) generalInfo.push(`**Type**: ${airportDataResponse.type}`);
                     if (airportDataResponse.iso_region) generalInfo.push(`**Region**: ${airportDataResponse.iso_region}`);
-                    if (airportDataResponse.iso_country) generalInfo.push(`**Country**: ${airportDataResponse.iso_country}`);
+                    if (airportDataResponse.iso_country) generalInfo.push(`**Country**: ${countryInfo.name} (${airportDataResponse.iso_country})`);
     
                     const locationInfo: string[] = [];
                     if (airportDataResponse.latitude_deg) locationInfo.push(`**Latitude**: ${airportDataResponse.latitude_deg}`);
                     if (airportDataResponse.longitude_deg) locationInfo.push(`**Longitude**: ${airportDataResponse.longitude_deg}`);
                     if (airportDataResponse.elevation_ft) locationInfo.push(`**Elevation**: ${airportDataResponse.elevation_ft} ft`);
-                    if (airportDataResponse.municipality) locationInfo.push(`**Municipality**: ${airportDataResponse.municipality}`);
+                    if (airportDataResponse.municipality) locationInfo.push(`**Location**: ${airportDataResponse.municipality}, ${countryInfo.name} `);
     
                     const codesInfo: string[] = [];
                     if (airportDataResponse.gps_code) codesInfo.push(`**GPS Code**: ${airportDataResponse.gps_code}`);
@@ -79,7 +83,7 @@ const storymodal: Command = {
     
                     const airportEmbed = new EmbedBuilder()
                         .setTitle(`Airport: ${airportDataResponse.name}`)
-                        .setDescription(`Detailed information about ${airportDataResponse.name}, ${airportDataResponse.iso_country}`)
+                        .setDescription(`Detailed information about ${airportDataResponse.name}, ${countryInfo.name}`)
                         .addFields(
                             {
                                 name: `General Information`,
