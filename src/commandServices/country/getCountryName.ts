@@ -10,7 +10,7 @@ setInterval(async () => {
   await getCountryNames();
 }, CACHE_EXPIRY);
 
-async function getCountryNames(): Promise<Country[]> {
+export async function getCountryNames(): Promise<Country[]> {
   if (cachedCountryData && (Date.now() - cachedCountryData.timestamp) < CACHE_EXPIRY) {
     console.log("USING CACHED DATA");
     return cachedCountryData.data as Country[];
@@ -54,5 +54,6 @@ return matchingCountry;
 
 
 }
+
 
 export default getCountry;

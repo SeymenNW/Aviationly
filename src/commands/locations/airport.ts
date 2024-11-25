@@ -3,11 +3,12 @@ import Papa from 'papaparse';
 import type { Command } from '../../types/Command';
 import type { AirportData } from '../../types/AirportData';
 import getAirportsList from '../../commandServices/airport/getAirportsList';
-import getCountry from '../../commandServices/country/getCountryName';
+import getCountry, { getCountryNames } from '../../commandServices/country/getCountryName';
 import type { Country } from '../../types/Country';
 
 type stringChoice = {
     name: string,
+    searchValue:string
     value: string
 }
 
@@ -15,8 +16,8 @@ const storymodal: Command = {
     data: new SlashCommandBuilder()
         .setName('airport')
         .setDescription('Gets Airport information for the selected Airport')
-         .addStringOption(option => option.setName(`icao`)
-        .setDescription(`icao code for the airport`)
+         .addStringOption(option => option.setName(`search`)
+        .setDescription(`Search for: Airport, Country or ICAO code.`)
         .setRequired(true)
         .setAutocomplete(true)
         ) as SlashCommandBuilder,
@@ -25,19 +26,25 @@ const storymodal: Command = {
         const focusedOption = interaction.options.getFocused(true);
         let choices: stringChoice[] = [];
 
+      const countryNames = await getCountryNames();
+
         
-        if (focusedOption.name === 'icao') {
+        if (focusedOption.name === 'search') {
             
             for (const airport of await getAirportsList()) {
+
+                const countryName = countryNames.find(cc=>cc.code == airport.iso_country)?.name;
+
                 choices.push({
-                    name: `${airport.name} (${airport.ident})`,
+                    name: `${airport.name} (${airport.ident}) (${airport.iso_country})`,
+                    searchValue: `${airport.name} (${airport.ident}) (${airport.iso_country}) / ${countryName})`,
                     value: airport.ident
                 })
             }
         }
 
         const filtered = choices.filter(choice =>
-            choice.name.toLowerCase().includes(focusedOption.value.toLowerCase())
+            choice.searchValue.toLowerCase().includes(focusedOption.value.toLowerCase())
         ).slice(0,24);
 
         await interaction.respond(
@@ -48,7 +55,7 @@ const storymodal: Command = {
 
 
     async execute(interaction: CommandInteraction) {
-        const icaoValue = interaction.options.get('icao')?.value as string;
+        const icaoValue = interaction.options.get('search')?.value as string;
     
         try {
             const airportData: AirportData[] = await getAirportsList();
