@@ -46,17 +46,26 @@ const storymodal: Command = {
 
 
     async execute(interaction: CommandInteraction) {
+        const icaoValue = interaction.options.get('icao')?.value as string;
     
-        const icaoValue:any|string = interaction.options.get('icao')?.value;
-
-     const airportData: AirportData[] = await getAirportsList();
-
-      if (airportData.length > 0) {
-         interaction.reply(airportData.filter(ad => ad.ident == icaoValue)[0].name);
-     } else {
-         interaction.reply("No airports found in the data.");
-      }
-            
+        try {
+            const airportData: AirportData[] = await getAirportsList();
+    
+            if (airportData.length > 0) {
+                const airportDataResponse = airportData.find(ad => ad.ident === icaoValue);
+    
+                if (airportDataResponse) {
+                    await interaction.reply(airportDataResponse.name);
+                } else {
+                    await interaction.reply("Looks like that specific Airport doesn't exist.. Or you just can't spell.");
+                }
+            } else {
+                await interaction.reply("Airport data unfortunately unavailable.");
+            }
+        } catch (error) {
+            console.error(error);
+            await interaction.reply("An error occured.");
+        }
     },
     cooldown: 4
 };
