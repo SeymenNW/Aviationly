@@ -4,7 +4,7 @@ import type { Command } from '../../types/Command';
 import notamDecoder from '../../services/notams.services/notamdecoder.service';
 import type { DecodedNotam } from '../../types/DecodedNotam';
 
-const storymodal: Command = {
+const notamdecoder: Command = {
     data: new SlashCommandBuilder()
         .setName('notamdecoder')
         .setDescription('Decode any Notam (Some Notam types are not compatible)'),
@@ -97,4 +97,4 @@ const storymodal: Command = {
     cooldown: 4
 };
 
-export default storymodal;
+export default notamdecoder;
