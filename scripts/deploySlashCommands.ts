@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 //Change this based on whether its release or dev
-const isDevelopment:boolean = true;
+const isDevelopment:boolean = false;
 const commands: Array<any> = [];
 
 const botToken: string = process.env.BOT_TOKEN ?? '';

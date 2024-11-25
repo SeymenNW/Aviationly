@@ -55,38 +55,58 @@ const storymodal: Command = {
                 const airportDataResponse = airportData.find(ad => ad.ident === icaoValue);
     
                 if (airportDataResponse) {
-
+                    const generalInfo: string[] = [];
+                    if (airportDataResponse.id) generalInfo.push(`**ID**: ${airportDataResponse.id}`);
+                    if (airportDataResponse.ident) generalInfo.push(`**Ident**: ${airportDataResponse.ident}`);
+                    if (airportDataResponse.type) generalInfo.push(`**Type**: ${airportDataResponse.type}`);
+                    if (airportDataResponse.iso_region) generalInfo.push(`**Region**: ${airportDataResponse.iso_region}`);
+                    if (airportDataResponse.iso_country) generalInfo.push(`**Country**: ${airportDataResponse.iso_country}`);
+    
+                    const locationInfo: string[] = [];
+                    if (airportDataResponse.latitude_deg) locationInfo.push(`**Latitude**: ${airportDataResponse.latitude_deg}`);
+                    if (airportDataResponse.longitude_deg) locationInfo.push(`**Longitude**: ${airportDataResponse.longitude_deg}`);
+                    if (airportDataResponse.elevation_ft) locationInfo.push(`**Elevation**: ${airportDataResponse.elevation_ft} ft`);
+                    if (airportDataResponse.municipality) locationInfo.push(`**Municipality**: ${airportDataResponse.municipality}`);
+    
+                    const codesInfo: string[] = [];
+                    if (airportDataResponse.gps_code) codesInfo.push(`**GPS Code**: ${airportDataResponse.gps_code}`);
+                    if (airportDataResponse.iata_code) codesInfo.push(`**IATA Code**: ${airportDataResponse.iata_code}`);
+                    if (airportDataResponse.local_code) codesInfo.push(`**Local Code**: ${airportDataResponse.local_code}`);
+    
+                    const linksInfo: string[] = [];
+                    if (airportDataResponse.wikipedia_link) linksInfo.push(`**Wikipedia**: ${airportDataResponse.wikipedia_link}`);
+                    if (airportDataResponse.home_link) linksInfo.push(`**Home**: ${airportDataResponse.home_link}`);
+    
                     const airportEmbed = new EmbedBuilder()
-                    .setTitle(`Airport: ${airportDataResponse.name}`)
-                    .setDescription(`Detailed information about ${airportDataResponse.name}, ${airportDataResponse.iso_country}`)
-                    .addFields(
-                        {
-                            name: `General Information`,
-                            value: `**ID**: ${airportDataResponse.id}\n**Ident**: ${airportDataResponse.ident}\n**Type**: ${airportDataResponse.type}\n**Region**: ${airportDataResponse.iso_region}\n**Country**: ${airportDataResponse.iso_country}`,
-                            inline: false,
-                        },
-                        {
-                            name: `Location`,
-                            value: `**Latitude**: ${airportDataResponse.latitude_deg}\n**Longitude**: ${airportDataResponse.longitude_deg}\n**Elevation**: ${airportDataResponse.elevation_ft} ft\n**Municipality**: ${airportDataResponse.municipality}`,
-                            inline: false,
-                        },
-                        {
-                            name: `Codes`,
-                            value: `**GPS Code**: ${airportDataResponse.gps_code || "N/A"}\n**IATA Code**: ${airportDataResponse.iata_code || "N/A"}\n**Local Code**: ${airportDataResponse.local_code || "N/A"}`,
-                            inline: false,
-                        },
-                        {
-                            name: `Links`,
-                            value: `**Wikipedia**: ${airportDataResponse.wikipedia_link || "N/A"}\n**Home**: ${airportDataResponse.home_link || "N/A"}`,
-                            inline: false,
-                        }
-                    )
-                    .setColor(0x1e90ff)
-                    .setFooter({ text: `Airport: ${airportDataResponse.name}` })
-                    .setTimestamp();
-                
-
-                    await interaction.reply({embeds: [airportEmbed]});
+                        .setTitle(`Airport: ${airportDataResponse.name}`)
+                        .setDescription(`Detailed information about ${airportDataResponse.name}, ${airportDataResponse.iso_country}`)
+                        .addFields(
+                            {
+                                name: `General Information`,
+                                value: generalInfo.join('\n') || "No general information available.",
+                                inline: false,
+                            },
+                            {
+                                name: `Location`,
+                                value: locationInfo.join('\n') || "No location information available.",
+                                inline: false,
+                            },
+                            {
+                                name: `Codes`,
+                                value: codesInfo.join('\n') || "No codes available.",
+                                inline: false,
+                            },
+                            {
+                                name: `Links`,
+                                value: linksInfo.join('\n') || "No links available.",
+                                inline: false,
+                            }
+                        )
+                        .setColor(0x1e90ff)
+                        .setFooter({ text: `Airport: ${airportDataResponse.name}` })
+                        .setTimestamp();
+    
+                    await interaction.reply({ embeds: [airportEmbed] });
                 } else {
                     await interaction.reply("Looks like that specific Airport doesn't exist.. Or you just can't spell.");
                 }
@@ -95,9 +115,10 @@ const storymodal: Command = {
             }
         } catch (error) {
             console.error(error);
-            await interaction.reply("An error occured.");
+            await interaction.reply("An error occurred.");
         }
-    },
+    }
+    ,
     cooldown: 4
 };
 
