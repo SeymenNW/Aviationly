@@ -5,12 +5,9 @@ import type { AirportData } from '../../types/AirportData';
 import getAirportsList from '../../commandServices/airport/getAirportsList';
 import getCountry, { getCountryNames } from '../../commandServices/country/getCountryName';
 import type { Country } from '../../types/Country';
+import type { StringChoice } from '../../types/StringChoice';
 
-type stringChoice = {
-    name: string,
-    searchValue:string
-    value: string
-}
+
 
 const storymodal: Command = {
     data: new SlashCommandBuilder()
@@ -24,7 +21,7 @@ const storymodal: Command = {
 
     async autoComplete(interaction: AutocompleteInteraction) {
         const focusedOption = interaction.options.getFocused(true);
-        let choices: stringChoice[] = [];
+        let choices: StringChoice[] = [];
 
       const countryNames = await getCountryNames();
 
@@ -39,7 +36,7 @@ const storymodal: Command = {
                     name: `${airport.name} (${airport.ident}) (${airport.iso_country})`,
                     searchValue: `${airport.name} (${airport.ident}) (${airport.iso_country}) / ${countryName})`,
                     value: airport.ident
-                })
+                });
             }
         }
 
