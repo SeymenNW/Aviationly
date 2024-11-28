@@ -8,6 +8,7 @@ import type { Notam, NotamList } from '../../types/Notam';
 import getAirportsList from '../../commandServices/airport/getAirportsList';
 import { getCountryNames } from '../../commandServices/country/getCountryName';
 import type { StringChoice } from '../../types/StringChoice';
+import { getNotamsByIcao } from '../../commandServices/notam/getNotams';
 
 const notam: Command = {
 	data: new SlashCommandBuilder()
@@ -19,61 +20,66 @@ const notam: Command = {
 
 	async execute(interaction: CommandInteraction) { 
 
-		const icaoValue = interaction.options.get('airport')?.value as string;
+		const icaoValue:string = interaction.options.get('airport')?.value as string;
 
-		const response = await fetch("https://notams.aim.faa.gov/notamSearch/search", {
-			method: "POST",
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			},
-			body: 'searchType=0' +
-      `&designatorsForLocation=${icaoValue}` +
-      '&designatorForAccountable=' +
-      '&latDegrees=' +
-      '&latMinutes=0' +
-      '&latSeconds=0' +
-      '&longDegrees=' +
-      '&longMinutes=0' +
-      '&longSeconds=0' +
-      '&radius=10' +
-      '&sortColumns=5+false' +
-      '&sortDirection=true' +
-      '&designatorForNotamNumberSearch=' +
-      '&notamNumber=' +
-      '&radiusSearchOnDesignator=false' +
-      '&radiusSearchDesignator=' +
-      '&latitudeDirection=N' +
-      '&longitudeDirection=W' +
-      '&freeFormText=' +
-      '&flightPathText=' +
-      '&flightPathDivertAirfields=' +
-      '&flightPathBuffer=4' +
-      '&flightPathIncludeNavaids=true' +
-      '&flightPathIncludeArtcc=false' +
-      '&flightPathIncludeTfr=true' +
-      '&flightPathIncludeRegulatory=false' +
-      '&flightPathResultsType=All+NOTAMs' +
-      '&archiveDate=' +
-      '&archiveDesignator=' +
-      '&offset=0' +
-      '&notamsOnly=false' +
-      '&filters=' +
-      '&minRunwayLength=' +
-      '&minRunwayWidth=' +
-      '&runwaySurfaceTypes=' +
-      '&predefinedAbraka=' +
-      '&predefinedDabra=' +
-      '&flightPathAddlBuffer=' +
-      '&recaptchaToken='
+	
+        const notams:NotamList = await getNotamsByIcao(icaoValue)
 
-		});
+        const chosenNotam:Notam = notams.notamList[0];
 
-		const responseText = await response.text();
+        const status: string[] = [];
+        const statusTitle:string = `Status (${chosenNotam.status === "Active" ? "Active ✅" : "NOT Active ❌"})`
+        if (chosenNotam.issueDate) status.push(`**Issue Date:** ${chosenNotam.issueDate}`)
+        if (chosenNotam.startDate) status.push(`**Start Date:** ${chosenNotam.startDate}`)
+        if (chosenNotam.endDate) status.push(chosenNotam.endDate === "PERM" ? `**End Date**: PERMANENT ♾️` : `**End Date**: ${chosenNotam.endDate}`)
+         
 
-		const notams:NotamList = JSON.parse(responseText);
+        const generalInfo: string[] = [];
+        if (chosenNotam.notamNumber && chosenNotam.featureName) generalInfo.push(`**Notam**: ${chosenNotam.notamNumber} (${chosenNotam.featureName})`);
+        if (chosenNotam.source) generalInfo.push(`**Source**: ${chosenNotam.source} (Type: ${chosenNotam.sourceType})`)
+
+        const  conditionTitle:string = "Condition";
+        let condition:string = "Condition Message";
+        if(chosenNotam.traditionalMessageFrom4thWord) condition = `\n\`\`\`\n${chosenNotam.traditionalMessageFrom4thWord}\n\`\`\``;
+
+        const  icaoMessageTitle:string = "ICAO Message (Notam Text)";
+        let icaoMessage:string = "ICAO Message";
+        if(chosenNotam.icaoMessage) icaoMessage = `\n\`\`\`\n${chosenNotam.icaoMessage}\n\`\`\``;
+
+   
+        
+
+
+        const notamEmbed = new EmbedBuilder()
+        .setTitle(`NOTAM #: ${chosenNotam.notamNumber} (${chosenNotam.facilityDesignator})`)
+        .setDescription(`Detailed information about NOTAM '${chosenNotam.notamNumber}' 
+            located in ${chosenNotam.airportName}`)
+            .setFields().addFields(
+                {
+                    name: statusTitle,
+                    value: status.join("\n")
+                },
+                {
+                name: "General Information",
+                value: generalInfo.join("\n")
+                },
+                {
+                    name: conditionTitle,
+                    value: condition
+                },
+                {
+                    name: icaoMessageTitle,
+                    value: icaoMessage
+               } 
+        ).setFooter({
+            text: "Tip: Copy the ICAO Message and use '/notamdecoder' for more info! "
+        })
+
+            
+       
 		
 
-        interaction.reply(notams.notamList[0].icaoMessage);
+        interaction.reply({embeds: [notamEmbed]});
     
 
 
