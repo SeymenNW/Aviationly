@@ -14,18 +14,23 @@ const notam: Command = {
 	data: new SlashCommandBuilder()
 		.setName('notam')
 		.setDescription('Get the active and upcoming NOTAMs (Notice to Air Missions) for any airport')
-		.addStringOption(option => option.setName("airport").setDescription("Choose Airport to view METAR info").setAutocomplete(true).setRequired(true)) as SlashCommandBuilder,
+		.addStringOption(option => option.setName("airport").setDescription("Choose Airport to view METAR info").setAutocomplete(true).setRequired(true))
+		.addStringOption(option => option.setName("notam").setDescription("Choose NOTAM").setAutocomplete(true).setRequired(true)) as SlashCommandBuilder,
 		
 
 
 	async execute(interaction: CommandInteraction) { 
 
 		const icaoValue:string = interaction.options.get('airport')?.value as string;
+		const notamValue:string = interaction.options.get('notam')?.value as string;
+
+        if(notamValue !== "NOTHING") {
+
+       
 
 	
-        const notams:NotamList = await getNotamsByIcao(icaoValue)
+        const chosenNotam:Notam = (await getNotamsByIcao(icaoValue)).notamList.find(notam => notam.notamNumber === notamValue) as Notam;
 
-        const chosenNotam:Notam = notams.notamList[0];
 
         const status: string[] = [];
         const statusTitle:string = `Status (${chosenNotam.status === "Active" ? "Active ✅" : "NOT Active ❌"})`
@@ -80,7 +85,10 @@ const notam: Command = {
 		
 
         interaction.reply({embeds: [notamEmbed]});
-    
+    } else{
+        interaction.reply(`Could not find any valid NOTAMs for '${icaoValue}'`);
+
+    }
 
 
 	},
@@ -90,8 +98,8 @@ const notam: Command = {
         let choices: StringChoice[] = [];
 
       const countryNames = await getCountryNames();
+      const icaoValue:string = interaction.options.get('airport')?.value as string;
 
-        
         if (focusedOption.name === 'airport') {
             
             for (const airport of await getAirportsList()) {
@@ -105,10 +113,35 @@ const notam: Command = {
                 });
             }
         }
+    
+
+        if(focusedOption.name === `notam`) {
+        const notamsList:NotamList = await (await getNotamsByIcao(icaoValue)) as NotamList;
+        if(notamsList.notamList) {
+        
+            for (const notam of (await getNotamsByIcao(icaoValue)).notamList) {
+                
+                choices.push({
+                    name: `Notam #: ${notam.notamNumber} - ${notam.status} (${notam.icaoId}/${notam.airportName})`,
+                    searchValue: `${notam.icaoMessage}`,
+                    value: notam.notamNumber
+                });
+
+            }
+        } else {
+            choices.push({
+                name: `NO Notams found for this AIRPORT.`,
+                searchValue: `NO Notams found for this AIRPORT.`,
+                value: `NOTHING`
+            });
+        }
+        }
+
 
         const filtered = choices.filter(choice =>
             choice.searchValue.toLowerCase().includes(focusedOption.value.toLowerCase())
         ).slice(0,24);
+
 
         await interaction.respond(
             filtered.map(choice => ({ name: choice.name, value: choice.value }))
