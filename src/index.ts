@@ -36,6 +36,8 @@ const client = new Client({
 await readyEvent(client);
 client.commands = new Collection<string, Command>();
 client.cooldowns = new Collection<string, string>();
+
+
 await interactionCreateHandler(client);
 
 loadCommands(client, __dirname).then(() => {

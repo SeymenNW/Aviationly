@@ -1,7 +1,7 @@
 import { ActionRowBuilder, CommandInteraction, EmbedBuilder, ModalBuilder, ModalSubmitInteraction, SlashCommandBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import type { Command } from '../../types/Command';
 //@ts-ignore
-import notamDecoder from '../../services/notams.services/notamdecoder.service';
+import notamDecoder from '../../decoders/notamDecoder';
 import type { DecodedNotam } from '../../types/DecodedNotam';
 
 const notamdecoder: Command = {

@@ -3,7 +3,7 @@ import type { Command } from '../../types/Command';
 import getAirportsList from '../../commandServices/airport/getAirportsList';
 import { getCountryNames } from '../../commandServices/country/getCountryName';
 import type { StringChoice } from '../../types/StringChoice';
-
+import metarParser from 'aewx-metar-parser';
 const metar: Command = {
 	data: new SlashCommandBuilder()
 
@@ -39,8 +39,10 @@ const metar: Command = {
      if (presentationOptionValue === "fullMetar") {
         interaction.reply("Not implemented");
 
+
      } else {
-        interaction.reply(metarResponseData);
+        const metar =  metarParser(metarResponseData);
+        interaction.reply(JSON.stringify(metar));
 
      }
     } else {

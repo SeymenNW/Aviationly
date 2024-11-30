@@ -9,7 +9,7 @@ import type { StringChoice } from '../../types/StringChoice';
 
 
 
-const storymodal: Command = {
+const airport: Command = {
     data: new SlashCommandBuilder()
         .setName('airport')
         .setDescription('Gets Airport information for the selected Airport')
@@ -130,4 +130,4 @@ const storymodal: Command = {
     cooldown: 4
 };
 
-export default storymodal;
+export default airport;

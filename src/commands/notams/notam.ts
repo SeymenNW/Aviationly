@@ -2,7 +2,7 @@ import { ActionRowBuilder, AutocompleteInteraction, CommandInteraction, EmbedBui
 import type { Command } from '../../types/Command';
 import Papa from 'papaparse';
 //@ts-ignore
-import notamDecoder from '../../services/notams.services/notamdecoder.service';
+import notamDecoder from '../../decoders/notamDecoder';
 import type { DecodedNotam } from '../../types/DecodedNotam';
 import type { Notam, NotamList } from '../../types/Notam';
 import getAirportsList from '../../commandServices/airport/getAirportsList';
