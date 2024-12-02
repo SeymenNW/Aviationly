@@ -1,7 +1,7 @@
-import { ActionRowBuilder, AutocompleteInteraction, CommandInteraction, EmbedBuilder, ModalBuilder, ModalSubmitInteraction, SlashCommandBuilder, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
+import { ActionRowBuilder, AutocompleteInteraction, CommandInteraction, Embed, EmbedBuilder, ModalBuilder, ModalSubmitInteraction, SlashCommandBuilder, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 import type { Command } from '../../types/Command';
 import getAirportsList from '../../commandServices/airport/getAirportsList';
-import { getCountryNames } from '../../commandServices/country/getCountryName';
+import getCountry, { getCountryNames } from '../../commandServices/country/getCountryName';
 import type { StringChoice } from '../../types/StringChoice';
 import metarParser from 'aewx-metar-parser';
 const metar: Command = {
@@ -36,13 +36,72 @@ const metar: Command = {
 
 
      if (metarResponseData) {
-     if (presentationOptionValue === "fullMetar") {
-        interaction.reply("Not implemented");
+     if (presentationOptionValue === "rawMetar") {
+        interaction.reply(metarResponseData);
 
 
-     } else {
-        const metar =  metarParser(metarResponseData);
-        interaction.reply(JSON.stringify(metar));
+     } else if (presentationOptionValue === "fullMetar") {
+        const metarData =  metarParser(metarResponseData);
+
+     
+        const generalInfo = [];
+        if (metarData.raw_text) generalInfo.push(`**Raw Text**: ${metarData.raw_text}`);
+        if (metarData.flight_category) generalInfo.push(`**Flight Category**: ${metarData.flight_category}`);
+        if (metarData.icao) generalInfo.push(`**ICAO**: ${metarData.icao}`);
+        if (metarData.observed) generalInfo.push(`**Observed**: ${metarData.observed}`);
+    
+        const windInfo = [];
+        if (metarData.wind) {
+            windInfo.push(`**Degrees**: ${metarData.wind.degrees}`);
+            windInfo.push(`**Speed (kts)**: ${metarData.wind.speed_kts}`);
+            if (metarData.wind.gust_kts) windInfo.push(`**Gust (kts)**: ${metarData.wind.gust_kts}`);
+            if (metarData.wind.degrees_from) windInfo.push(`**From**: ${metarData.wind.degrees_from}`);
+            if (metarData.wind.degrees_to) windInfo.push(`**To**: ${metarData.wind.degrees_to}`);
+        }
+    
+        const visibilityInfo = [];
+        if (metarData.visibility) {
+            visibilityInfo.push(`**Miles**: ${metarData.visibility.miles}`);
+            visibilityInfo.push(`**Meters**: ${metarData.visibility.meters}`);
+        }
+    
+        const temperatureInfo = [];
+        if (metarData.temperature) {
+            temperatureInfo.push(`**Celsius**: ${metarData.temperature.celsius}`);
+            temperatureInfo.push(`**Fahrenheit**: ${metarData.temperature.fahrenheit}`);
+        }
+    
+        const airportEmbed = new EmbedBuilder()
+            .setTitle(`METAR Data for ${(await getAirportsList()).find(air => air.ident === metarData.icao)?.name}`)
+            .setDescription(`Detailed METAR information for ${metarData.icao || "Unknown ICAO"}`)
+            .addFields(
+                {
+                    name: `General Information`,
+                    value: generalInfo.join('\n') || "No general information available.",
+                    inline: false,
+                },
+                {
+                    name: `Wind Information`,
+                    value: windInfo.join('\n') || "No wind information available.",
+                    inline: false,
+                },
+                {
+                    name: `Visibility`,
+                    value: visibilityInfo.join('\n') || "No visibility information available.",
+                    inline: false,
+                },
+                {
+                    name: `Temperature`,
+                    value: temperatureInfo.join('\n') || "No temperature information available.",
+                    inline: false,
+                }
+            )
+            .setColor(0x1e90ff)
+            .setFooter({ text: `METAR data provided by: Aviation Weather Center` })
+            .setTimestamp();
+    
+        await interaction.reply({ embeds: [airportEmbed] });
+
 
      }
     } else {
@@ -67,8 +126,8 @@ const metar: Command = {
                 const countryName = countryNames.find(cc=>cc.code == airport.iso_country)?.name;
 
                 choices.push({
-                    name: `${airport.name} (${airport.ident}) (${airport.iso_country})`,
-                    searchValue: `${airport.name} (${airport.ident}) (${airport.iso_country}) / ${countryName})`,
+                    name: `${airport.ident}: ${airport.name}  (${airport.iso_country})`,
+                    searchValue: `${airport.ident} ${airport.name} ${airport.iso_country}  ${countryName}`,
                     value: airport.ident
                 })
             }
