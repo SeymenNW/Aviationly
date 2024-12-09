@@ -1,5 +1,5 @@
 # see all versions at https://hub.docker.com/r/oven/bun/tags
-FROM oven/bun:1-alpine as base
+FROM oven/bun:1-alpine AS base
 
 ENV NODE_ENV=production
 
@@ -26,7 +26,7 @@ RUN bun run build
 
 
 # copy production dependencies and build output
-FROM base as release
+FROM base AS release
 
 COPY --from=prerelease /backend/build/index.js /backend/build/index.js
 COPY --from=install /temp/prod/package.json /backend/package.json
