@@ -35,23 +35,16 @@ To see a more detailed list of what it actually does, I refer to the commands li
 
   
 
-| Slash | Description |
+| Command         | Description                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| `/metar`        | Shows the latest METAR (Meteorological Terminal Aviation Routine Weather Report) for any airport in the world. |
+| `/taf`          | Shows the latest TAF (Terminal Aerodrome Forecast) for any airport in the world. Although not implemented yet. |
+| `/notam`        | Get the active and upcoming NOTAMs (Notice to Air Missions) for any airport.                      |
+| `/notamdecoder` | Decode any NOTAM (Some NOTAM types are not compatible, but I'm working on it).                    |
+| `/airport`      | Detailed information about airports all around the world.                                        |
+| `/flight`       | Get the flight information for a real-life flight (Coming soon).                                 |
+| `/bot`          | Provides information about the project, GitHub, and more.                                        |
 
-| --------------- | ---------------------------------------------------------------------------------------------- |
-
-| `/metar` | Shows the latest METAR (Meteorological Terminal Aviation Routine Weather Report) for any airport in the world. |
-
-| `/taf` | Shows the latest TAF (Terminal Aerodrome Forecast) for any airport in the world. Altough not implemented yet. |
-
-| `/notam` | Get the active and upcoming NOTAMs (Notice to Air Missions) for any airport |
-
-| `/notamdecoder` | Decode any Notam (Some Notam types are not compatible, but I'm working on it) |
-
-| `/airport` | Detailed Information about Airports all around the world. |
-
-| `/flight` | Get the flight information for a real life flight (Coming soon) |
-
-| `/bot` | Provides information about the project, GitHub and more.|
 
   
   
