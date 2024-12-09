@@ -1,35 +1,29 @@
-# use the official Bun image
-# see all versions at https://hub.docker.com/r/oven/bun/tags
+# Use the official Bun image
+# See all versions at https://hub.docker.com/r/oven/bun/tags
 FROM oven/bun:1 AS base
+
+# Set the working directory
 WORKDIR /usr/src/app
 
-# install dependencies into temp directory
-# this will cache them and speed up future builds
-FROM base AS install
+# Install dependencies and copy the source code
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile
 
-
-# install with --production (exclude devDependencies)
-RUN mkdir -p /temp/prod
-
-RUN bun install --frozen-lockfile --production
-
-# copy node_modules from temp directory
-# then copy all (non-ignored) project files into the image
-FROM base AS prerelease
+# Copy the rest of the application code
 COPY . .
 
-# [optional] tests & build
+# Set environment to production
 ENV NODE_ENV=production
+
+# [Optional] Run tests
 RUN bun test
+
+# Build the application
 RUN bun run build
 
-# copy production dependencies and source code into final image
-FROM base AS release
-COPY --from=install /temp/prod/node_modules node_modules
-COPY --from=prerelease /usr/src/app/index.ts .
-COPY --from=prerelease /usr/src/app/package.json .
-
-# run the app
-USER bun
+# Expose the application port
 EXPOSE 3000/tcp
+
+# Set non-root user and entrypoint
+USER bun
 ENTRYPOINT [ "bun", "run", "server" ]
