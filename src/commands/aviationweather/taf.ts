@@ -9,7 +9,7 @@ const taf: Command = {
 
 	async execute(interaction: CommandInteraction) { 
 
-        interaction.reply("Soon.");
+        interaction.reply("This is an upcoming feature.");
     
 
 
