@@ -19,6 +19,7 @@
     "deploy-commands": "bun run ./scripts/deploySlashCommands.ts",
     "server-dev-watch": "bun --watch ./src/index.ts",
     "server-dev": "bun --hot ./src/index.ts",
+    "server": "bun ./src/index.ts",
     "run-build": "bun run ./build/index.js",
     "debug": "bun --inspect ./src/index.ts",
     "test-build": "bun build --target=bun ./src/index.ts --outdir ./build",
